@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 from django.dispatch import Signal
-from .models import is_email, is_mobile, User
+from django.db.models.signals import post_save
+from .models import is_email, is_mobile, User, Profile
 import random
 
 verify_code_signal = Signal()
@@ -24,3 +25,8 @@ def send_verify_code(*args, **kwargs):
         send_email(user.username, user.verify_code)
     if is_mobile(user.username):
         send_sms(user.username, user.verify_code)
+
+@receiver(post_save,sender='accounts.User')
+def create_profile(instance,created,*args, **kwargs):
+    if instance.is_active:
+        Profile.objects.get_or_create(user=instance)
