@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.core.exceptions import ValidationError
 import re
-import random
 
 
 def is_email(value):
@@ -49,10 +48,6 @@ class User(AbstractBaseUser):
     def clean(self):
         if not is_mobile(self.username) and not is_email(self.username):
             return ValidationError("Enter Email or Phone")
-
-    def save(self, *args, **kwargs):
-        self.verify_code = random.randint(1000,9999)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.username}"

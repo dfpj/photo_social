@@ -1,23 +1,26 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save
-from .models import is_email, is_mobile
-from django.core.mail import send_mail
-from django.conf import settings
+from django.dispatch import Signal
+from .models import is_email, is_mobile, User
+import random
+
+verify_code_signal = Signal()
 
 
-def send_email(email,code):
-    send_mail("Photo Social",code,settings.EMAIL_HOST_USER,[email],fail_silently=False,)
+def send_email(email, code):
+    print("Email sendig ...")
+    # send_mail("Photo Social",code,settings.EMAIL_HOST_USER,[email],fail_silently=False,)
 
-def send_sms(mobile,code):
+
+def send_sms(mobile, code):
     pass
 
 
-@receiver(post_save, sender='accounts.User')
-def tasks_after_save_user(sender, instance, created, *args, **kwargs):
-    username = instance.username
-    if created:
-        if is_email(username):
-            send_email(username,instance.verify_code)
-        if is_mobile(username):
-            send_sms(username,instance.verify_code)
-
+@receiver(verify_code_signal)
+def send_verify_code(*args, **kwargs):
+    user = User.objects.get(username=kwargs['username'])
+    user.verify_code = random.randint(1000, 9999)
+    user.save()
+    if is_email(user.username):
+        send_email(user.username, user.verify_code)
+    if is_mobile(user.username):
+        send_sms(user.username, user.verify_code)
