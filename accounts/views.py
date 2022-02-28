@@ -37,7 +37,9 @@ class UserViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             user = get_object_or_404(User, pk=pk)
             if serializer.validated_data['verify_code'] == user.verify_code:
-                serializer.save()
-            return Response({"data":"success"}, status.HTTP_202_ACCEPTED)
+                user.is_active=True
+                user.save()
+                return Response({"data":"success"}, status.HTTP_202_ACCEPTED)
+            return Response({"data": "wrong"}, status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 

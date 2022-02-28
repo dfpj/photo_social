@@ -1,4 +1,4 @@
-from .models import User,is_mobile,is_email,Profile
+from .models import User
 from rest_framework import serializers
 
 
@@ -12,17 +12,3 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active': {'required':False},
             'username': {'required':False},
         }
-
-# def is_valid_username(value):
-#     if not is_email(value) and not is_mobile(value):
-#         return serializers.ValidationError("Enter Email or Phone")
-#
-# class UserVerifySerializers(serializers.Serializer):
-#     username = serializers.CharField(validators=[is_valid_username])
-#     verify_code = serializers.IntegerField()
-
-
-# class ProfileSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = Profile
-

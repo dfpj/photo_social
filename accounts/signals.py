@@ -1,8 +1,9 @@
 from django.dispatch import receiver
 from django.dispatch import Signal
 from django.db.models.signals import post_save
-from .models import is_email, is_mobile, User, Profile
+from .models import is_email, is_mobile, User
 import random
+from profiles.models import Profile
 
 verify_code_signal = Signal()
 
